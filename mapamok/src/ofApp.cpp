@@ -2,7 +2,6 @@
 
 using namespace ofxCv;
 using namespace cv;
-
 void ofApp::setb(string name, bool value) {
 	panel.setValueB(name, value);
 }
@@ -25,33 +24,31 @@ float ofApp::getf(string name) {
 void ofApp::setup() {
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
 	ofSetVerticalSync(true);
-	calibrationReady = false;
-	setupMesh();	
 	setupControlPanel();
+    model.setup(&panel, "model.dae");
 }
 
 void ofApp::update() {
 	ofSetWindowTitle("mapamok");
+    model.update();
 }
-
-
 
 void ofApp::draw() {
 	ofBackground(geti("backgroundColor"));
     if(getb("loadCalibration")) {
-		loadCalibration();
+		model.loadCalibration();
 		setb("loadCalibration", false);
 	}
 	if(getb("saveCalibration")) {
-		saveCalibration();
+		model.saveCalibration();
 		setb("saveCalibration", false);
 	}
     ofPushStyle();
     ofSetColor(255, 0, 255);
 	if(getb("selectionMode")) {
-		drawSelectionMode();
+		model.drawSelectionMode();
 	} else {
-		drawRenderMode();
+		model.drawRenderMode();
 	}
     ofPopStyle();
 	if(!getb("validShader")) {
@@ -75,7 +72,7 @@ void ofApp::keyPressed(int key) {
 		int choice = geti("selectionChoice");
 		setb("arrowing", true);
 		if(choice > 0){
-			Point2f& cur = imagePoints[choice];
+			Point2f & cur = model.getImagePoint(choice);
 			switch(key) {
 				case OF_KEY_LEFT: cur.x -= 1; break;
 				case OF_KEY_RIGHT: cur.x += 1; break;
@@ -90,8 +87,7 @@ void ofApp::keyPressed(int key) {
 		if(getb("selected")) {
 			setb("selected", false);
 			int choice = geti("selectionChoice");
-			referencePoints[choice] = false;
-			imagePoints[choice] = Point2f();
+            model.clearPoint(choice);
 		}
 	}
 	if(key == '\n') { // deselect
@@ -160,11 +156,11 @@ void ofApp::setupControlPanel() {
 	panel.addToggle("validShader", true);
 	panel.addToggle("selectionMode", true);
 	panel.addToggle("hoverSelected", false);
-	panel.addSlider("hoverChoice", 0, 0, objectPoints.size(), true);
+	panel.addSlider("hoverChoice", 0, 0, model.getObjectSize(), true);
 	panel.addToggle("selected", false);
 	panel.addToggle("dragging", false);
 	panel.addToggle("arrowing", false);
-	panel.addSlider("selectionChoice", 0, 0, objectPoints.size(), true);
+	panel.addSlider("selectionChoice", 0, 0, model.getObjectSize(), true);
 	panel.addSlider("slowLerpRate", .001, 0, .01);
 	panel.addSlider("fastLerpRate", 1, 0, 1);
 }

@@ -9,8 +9,11 @@
 #include "ofMain.h"
 #include "ofxCv.h"
 #include "ofxAssimpModelLoader.h"
-#include "ofApp.h"
-class Mapamok {
+#include "ofxProCamToolkit.h"
+#include "LineArt.h"
+#include "ofxAutoControlPanel.h"
+
+class Mapamok : public ofNode{
 private:
     ofxAssimpModelLoader model;
 	ofEasyCam cam;
@@ -26,11 +29,11 @@ private:
 	bool calibrationReady;
 	Poco::Timestamp lastFragTimestamp, lastVertTimestamp;
 	ofShader shader;
-    ofApp * mParent;
     string modelFile;
+    ofxAutoControlPanel * panel;
 public:
     Mapamok();
-    void setup(ofApp * parent, string filename);
+    void setup(ofxAutoControlPanel * control, string filename);
     void loadCalibration();
     void saveCalibration();
     void drawRenderMode();
@@ -41,4 +44,16 @@ public:
     void drawSelectionMode();
     void setupMesh(string filename);
     void update();
+    
+    void setb(string name, bool value);
+	void seti(string name, int value);
+	void setf(string name, float value);
+	bool getb(string name);
+	int geti(string name);
+	float getf(string name);
+    
+    void clearPoint(int choice);
+    int getObjectSize();
+    cv::Point2f & getImagePoint(int index);
+    
 };

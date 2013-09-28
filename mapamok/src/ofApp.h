@@ -1,12 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxCv.h"
-#include "ofxAssimpModelLoader.h"
-#include "ofxProCamToolkit.h"
 #include "ofxAutoControlPanel.h"
-#include "LineArt.h"
-
+#include "Mapamok.h"
 class ofApp : public ofBaseApp {
 public:
 	void setb(string name, bool value);
@@ -26,4 +22,5 @@ public:
 	void setupControlPanel();
 	
 	ofxAutoControlPanel panel;
+    Mapamok model;
 };

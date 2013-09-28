@@ -11,14 +11,34 @@
 using namespace ofxCv;
 using namespace cv;
 
+void Mapamok::setb(string name, bool value) {
+	panel->setValueB(name, value);
+}
+void Mapamok::seti(string name, int value) {
+	panel->setValueI(name, value);
+}
+void Mapamok::setf(string name, float value) {
+	panel->setValueF(name, value);
+}
+bool Mapamok::getb(string name) {
+	return panel->getValueB(name);
+}
+int Mapamok::geti(string name) {
+	return panel->getValueI(name);
+}
+float Mapamok::getf(string name) {
+	return panel->getValueF(name);
+}
+
 Mapamok::Mapamok(){
     modelFile = "model.dae";
 }
 
 
-void Mapamok::setup(ofApp * parent, string filename){
-    mParent = parent;
+void Mapamok::setup(ofxAutoControlPanel * control, string filename){
     modelFile = filename;
+    setupMesh(modelFile);
+    panel = control;
 }
 
 void Mapamok::setupMesh() {
@@ -33,9 +53,23 @@ void Mapamok::setupMesh() {
 	}
 }
 
+Point2f & Mapamok::getImagePoint(int index){ 
+    return imagePoints[index];
+}
+
+int Mapamok::getObjectSize(){
+    return objectPoints.size();
+}
+
+void Mapamok::clearPoint(int index){
+    referencePoints[index] = false;
+    imagePoints[index] = Point2f();
+}
+
+
 void Mapamok::updateRenderMode() {
 	// generate camera matrix given aov guess
-	float aov = mParent->getf("aov");
+	float aov = getf("aov");
 	Size2i imageSize(ofGetWidth(), ofGetHeight());
 	float f = imageSize.width * ofDegToRad(aov); // i think this is wrong, but it's optimized out anyway
 	Point2f c = Point2f(imageSize) * (1. / 2);
@@ -45,7 +79,7 @@ void Mapamok::updateRenderMode() {
                           0, 0, 1);
     
 	// generate flags
-#define getFlag(flag) (mParent->panel.getValueB((#flag)) ? flag : 0)
+#define getFlag(flag) (panel->getValueB((#flag)) ? flag : 0)
 	int flags =
     CV_CALIB_USE_INTRINSIC_GUESS |
     getFlag(CV_CALIB_FIX_PRINCIPAL_POINT) |
@@ -102,20 +136,20 @@ void Mapamok::drawLabeledPoint(int label, ofVec2f position, ofColor color, ofCol
 	ofSetLineWidth(1.5);
 	ofLine(position - ofVec2f(w,0), position + ofVec2f(w,0));
 	ofLine(position - ofVec2f(0,h), position + ofVec2f(0,h));
-	ofCircle(position, mParent->geti("selectedPointSize"));
+	ofCircle(position, geti("selectedPointSize"));
 	drawHighlightString(ofToString(label), position + tooltipOffset, bg, fg);
 	glPopAttrib();
 }
 
 void Mapamok::update(){
-    if(mParent->getb("randomLighting")) {
-		mParent->setf("lightX", ofSignedNoise(ofGetElapsedTimef(), 1, 1) * 1000);
-		mParent->setf("lightY", ofSignedNoise(1, ofGetElapsedTimef(), 1) * 1000);
-		mParent->setf("lightZ", ofSignedNoise(1, 1, ofGetElapsedTimef()) * 1000);
+    if(getb("randomLighting")) {
+		setf("lightX", ofSignedNoise(ofGetElapsedTimef(), 1, 1) * 1000);
+		setf("lightY", ofSignedNoise(1, ofGetElapsedTimef(), 1) * 1000);
+		setf("lightZ", ofSignedNoise(1, 1, ofGetElapsedTimef()) * 1000);
 	}
-	light.setPosition(mParent->getf("lightX"), mParent->getf("lightY"), mParent->getf("lightZ"));
+	light.setPosition(getf("lightX"), getf("lightY"), getf("lightZ"));
     
-	if(mParent->getb("selectionMode")) {
+	if(getb("selectionMode")) {
 		cam.enableMouseInput();
 	} else {
 		updateRenderMode();
@@ -139,7 +173,7 @@ void Mapamok::drawRenderMode() {
         
 		applyMatrix(modelMatrix);
 		render();
-		if(mParent->getb("setupMode")) {
+		if(getb("setupMode")) {
 			imageMesh = getProjectedMesh(objectMesh);
 		}
 	}
@@ -149,7 +183,7 @@ void Mapamok::drawRenderMode() {
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	
-	if(mParent->getb("setupMode")) {
+	if(getb("setupMode")) {
 		// draw all reference points cyan
 		int n = referencePoints.size();
 		for(int i = 0; i < n; i++) {
@@ -160,26 +194,26 @@ void Mapamok::drawRenderMode() {
 		
 		// move points that need to be dragged
 		// draw selected yellow
-		int choice = mParent->geti("selectionChoice");
-		if(mParent->getb("selected")) {
+		int choice = geti("selectionChoice");
+		if(getb("selected")) {
 			referencePoints[choice] = true;
 			Point2f& cur = imagePoints[choice];
 			if(cur == Point2f()) {
 				if(calibrationReady) {
 					cur = toCv(ofVec2f(imageMesh.getVertex(choice)));
 				} else {
-					cur = Point2f(mParent->mouseX, mParent->mouseY);
+					cur = Point2f(ofGetMouseX(), ofGetMouseY());
 				}
 			}
 		}
-		if(mParent->getb("dragging")) {
+		if(getb("dragging")) {
 			Point2f& cur = imagePoints[choice];
-			float rate = ofGetMousePressed(0) ? mParent->getf("slowLerpRate") : mParent->getf("fastLerpRate");
-			cur = Point2f(ofLerp(cur.x, mParent->mouseX, rate), ofLerp(cur.y, mParent->mouseY, rate));
+			float rate = ofGetMousePressed(0) ? getf("slowLerpRate") : getf("fastLerpRate");
+			cur = Point2f(ofLerp(cur.x, ofGetMouseX(), rate), ofLerp(cur.y, ofGetMouseY(), rate));
 			drawLabeledPoint(choice, toOf(cur), yellowPrint, ofColor::white, ofColor::black);
 			ofSetColor(ofColor::black);
 			ofRect(toOf(cur), 1, 1);
-		} else if(mParent->getb("arrowing")) {
+		} else if(getb("arrowing")) {
 			Point2f& cur = imagePoints[choice];
 			drawLabeledPoint(choice, toOf(cur), yellowPrint, ofColor::white, ofColor::black);
 			ofSetColor(ofColor::black);
@@ -188,13 +222,13 @@ void Mapamok::drawRenderMode() {
 			// check to see if anything is selected
 			// draw hover magenta
 			float distance;
-			ofVec2f selected = toOf(getClosestPoint(imagePoints, mParent->mouseX, mParent->mouseY, &choice, &distance));
-			if(!ofGetMousePressed() && referencePoints[choice] && distance < mParent->getf("selectionRadius")) {
-				mParent->seti("hoverChoice", choice);
-				mParent->setb("hoverSelected", true);
+			ofVec2f selected = toOf(getClosestPoint(imagePoints, ofGetMouseX(), ofGetMouseY(), &choice, &distance));
+			if(!ofGetMousePressed() && referencePoints[choice] && distance < getf("selectionRadius")) {
+				seti("hoverChoice", choice);
+				setb("hoverSelected", true);
 				drawLabeledPoint(choice, selected, magentaPrint);
 			} else {
-				mParent->setb("hoverSelected", false);
+				setb("hoverSelected", false);
 			}
 		}
 	}
@@ -203,13 +237,13 @@ void Mapamok::drawRenderMode() {
 
 void Mapamok::render() {
     ofPushStyle();
-    ofSetLineWidth(mParent->geti("lineWidth"));
-    if(mParent->getb("useSmoothing")) {
+    ofSetLineWidth(geti("lineWidth"));
+    if(getb("useSmoothing")) {
         ofEnableSmoothing();
     } else {
         ofDisableSmoothing();
     }
-    int shading = mParent->geti("shading");
+    int shading = geti("shading");
     bool useLights = shading == 1;
     bool useShader = shading == 2;
     if(useLights) {
@@ -219,11 +253,11 @@ void Mapamok::render() {
         glEnable(GL_NORMALIZE);
     }
     
-    if(mParent->getb("highlight")) {
+    if(getb("highlight")) {
         objectMesh.clearColors();
         int n = objectMesh.getNumVertices();
-        float highlightPosition = mParent->getf("highlightPosition");
-        float highlightOffset = mParent->getf("highlightOffset");
+        float highlightPosition = getf("highlightPosition");
+        float highlightOffset = getf("highlightOffset");
         for(int i = 0; i < n; i++) {
             int lower = ofMap(highlightPosition - highlightOffset, 0, 1, 0, n);
             int upper = ofMap(highlightPosition + highlightOffset, 0, 1, 0, n);
@@ -241,7 +275,7 @@ void Mapamok::render() {
         Poco::Timestamp vertTimestamp = vertFile.getPocoFile().getLastModified();
         if(fragTimestamp != lastFragTimestamp || vertTimestamp != lastVertTimestamp) {
             bool validShader = shader.load("shader");
-            mParent->setb("validShader", validShader);
+            setb("validShader", validShader);
         }
         lastFragTimestamp = fragTimestamp;
         lastVertTimestamp = vertTimestamp;
@@ -251,7 +285,7 @@ void Mapamok::render() {
         shader.end();
     }
     ofColor transparentBlack(0, 0, 0, 0);
-    switch(mParent->geti("drawMode")) {
+    switch(geti("drawMode")) {
         case 0: // faces
             if(useShader) shader.begin();
             //glEnable(GL_CULL_FACE);
@@ -365,23 +399,23 @@ void disableFog() {
 void Mapamok::drawSelectionMode() {
 	ofSetColor(255, 0, 255);
 	cam.begin();
-	float scale = mParent->getf("scale");
+	float scale = getf("scale");
 	ofScale(scale, scale, scale);
-	if(mParent->getb("useFog")) {
-		enableFog(mParent->getf("fogNear"), mParent->getf("fogFar"));
+	if(getb("useFog")) {
+		enableFog(getf("fogNear"), getf("fogFar"));
 	}
 	render();
-	if(mParent->getb("useFog")) {
+	if(getb("useFog")) {
 		disableFog();
 	}
-	if(mParent->getb("setupMode")) {
+	if(getb("setupMode")) {
 		imageMesh = getProjectedMesh(objectMesh);
 	}
 	cam.end();
 	
-	if(mParent->getb("setupMode")) {
+	if(getb("setupMode")) {
 		// draw all points cyan small
-		glPointSize(mParent->geti("screenPointSize"));
+		glPointSize(geti("screenPointSize"));
 		glEnable(GL_POINT_SMOOTH);
 		ofSetColor(cyanPrint);
 		imageMesh.drawVertices();
@@ -398,18 +432,18 @@ void Mapamok::drawSelectionMode() {
 		// draw hover point magenta
 		int choice;
 		float distance;
-		ofVec3f selected = getClosestPointOnMesh(imageMesh, mParent->mouseX, mParent->mouseY, &choice, &distance);
-		if(!ofGetMousePressed() && distance < mParent->getf("selectionRadius")) {
-			mParent->seti("hoverChoice", choice);
-			mParent->setb("hoverSelected", true);
+		ofVec3f selected = getClosestPointOnMesh(imageMesh, ofGetMouseX(), ofGetMouseY(), &choice, &distance);
+		if(!ofGetMousePressed() && distance < getf("selectionRadius")) {
+			seti("hoverChoice", choice);
+			setb("hoverSelected", true);
 			drawLabeledPoint(choice, selected, magentaPrint);
 		} else {
-			mParent->setb("hoverSelected", false);
+			setb("hoverSelected", false);
 		}
 		
 		// draw selected point yellow
-		if(mParent->getb("selected")) {
-			int choice = mParent->geti("selectionChoice");
+		if(getb("selected")) {
+			int choice = geti("selectionChoice");
 			ofVec2f selected = imageMesh.getVertex(choice);
 			drawLabeledPoint(choice, selected, yellowPrint, ofColor::white, ofColor::black);
 		}
