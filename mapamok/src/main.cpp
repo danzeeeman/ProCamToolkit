@@ -1,4 +1,4 @@
-#include "testApp.h"
+#include "ofApp.h"
 #include "ofAppGlutWindow.h"
 
 int main() {
@@ -8,5 +8,5 @@ int main() {
 #endif
 
 	ofSetupOpenGL(&window, 1024, 768, OF_FULLSCREEN);
-	ofRunApp(new testApp());
+	ofRunApp(new ofApp());
 }

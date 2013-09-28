@@ -1,8 +1,5 @@
-#include "testApp.h"
-#include "ofAppGlutWindow.h"
-
+#include "ofApp.h"
 int main() {
-	ofAppGlutWindow window;
-	ofSetupOpenGL(&window, 1280, 1024 / 2, OF_WINDOW);
-	ofRunApp(new testApp());
+    ofSetupOpenGL(1280, 800, OF_WINDOW);
+	ofRunApp(new ofApp());
 }

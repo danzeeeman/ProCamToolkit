@@ -6,14 +6,14 @@
 using namespace cv;
 using namespace ofxCv;
 
-const int tw = 1024;
-const int th = 768;
+const int tw = 1280;
+const int th = 800;
 const int tn = tw * th;
 
 #include "Lut.h"
 #include "ofxAutoControlPanel.h"
 
-class testApp : public ofBaseApp {
+class ofApp : public ofBaseApp {
 public:
 	void setup();
 	void update();

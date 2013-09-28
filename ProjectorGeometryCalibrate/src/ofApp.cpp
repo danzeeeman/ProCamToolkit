@@ -1,4 +1,4 @@
-#include "testApp.h"
+#include "ofApp.h"
 
 void thresholdedToBinary(ofShortImage& binaryCoded, vector<Mat>& thresholded) {
 	ofLogVerbose() << "thresholded to binary";
@@ -84,7 +84,7 @@ void grayDecode(string path, ofShortImage& binaryCoded) {
 		thresholded[i] = thresholded[i].mul(maskMat);
 	}
 	
-	thresholdedToBinary(binaryCoded, thresholded);	
+	thresholdedToBinary(binaryCoded, thresholded);
 	grayToBinary(binaryCoded, n);
 }
 
@@ -117,9 +117,9 @@ void buildBinaryCoded(ofShortImage& binaryCodedX, ofShortImage& binaryCodedY, of
 				bool curx = xPixels[i] % 2 == 0;
 				bool cury = yPixels[i] % 2 == 0;
 				binaryCoded.setColor(x, y,
-														 cury ?
-														 (curx ? ofColor::cyan : ofColor::magenta) :
-														 (curx ? ofColor::yellow : ofColor::black));
+                                     cury ?
+                                     (curx ? ofColor::cyan : ofColor::magenta) :
+                                     (curx ? ofColor::yellow : ofColor::black));
 			} else {
 				binaryCoded.setColor(x, y, ofColor::black);
 			}
@@ -182,43 +182,43 @@ void saveRemap(ofShortImage& binaryCodedX, ofShortImage& binaryCodedY, string fi
 	remap.saveImage(filename);
 	
 	/*
-	points.clear();
-	points.setMode(OF_PRIMITIVE_POINTS);
-	for(int i = 0; i < tn; i++) {
-		if(location[i] != ofVec2f()) {
-			if((i / tw) % 2 == 0) {
-				points.addColor(i % 2 == 0 ? ofColor::cyan : ofColor::magenta);
-			} else {
-				points.addColor(i % 2 == 0 ? ofColor::yellow : ofColor::white);
-			}
-			points.addVertex(location[i]);
-		}
-	}*/
+     points.clear();
+     points.setMode(OF_PRIMITIVE_POINTS);
+     for(int i = 0; i < tn; i++) {
+     if(location[i] != ofVec2f()) {
+     if((i / tw) % 2 == 0) {
+     points.addColor(i % 2 == 0 ? ofColor::cyan : ofColor::magenta);
+     } else {
+     points.addColor(i % 2 == 0 ? ofColor::yellow : ofColor::white);
+     }
+     points.addVertex(location[i]);
+     }
+     }*/
 }
 
-void testApp::setup() {
+void ofApp::setup() {
 	ofSetVerticalSync(true);
 	ofSetLogLevel(OF_LOG_VERBOSE);
-	ofSetDataPathRoot("../../../../../SharedData/");
-	/*
-	panel.setup();
-	panel.addPanel("Global");
-	panel.addSlider("blurScale", 1., 0, 4, false);
-	*/
+	//ofSetDataPathRoot("../../../../../SharedData/");
+	
+    panel.setup();
+    panel.addPanel("Global");
+    panel.addSlider("blurScale", 1., 0, 4, false);
+    
 	leftFbo.allocate(tw, th, GL_RGBA, 2);
 	rightFbo.allocate(tw, th, GL_RGBA, 2);
 	
-	string base = "interlab/";
+	string base = "";
 	if(false || !(binaryCodedLeftX.loadImage(base + "left/vertical.png") &&
-								binaryCodedLeftY.loadImage(base + "left/horizontal.png") &&
-								binaryCodedRightX.loadImage(base + "right/vertical.png") &&
-								binaryCodedRightY.loadImage(base + "right/horizontal.png"))) {
+                  binaryCodedLeftY.loadImage(base + "left/horizontal.png") &&
+                  binaryCodedRightX.loadImage(base + "right/vertical.png") &&
+                  binaryCodedRightY.loadImage(base + "right/horizontal.png"))) {
 		grayDecode(base + "left/vertical/", binaryCodedLeftX);
 		grayDecode(base + "left/horizontal/", binaryCodedLeftY);
 		grayDecode(base + "right/vertical/", binaryCodedRightX);
 		grayDecode(base + "right/horizontal/", binaryCodedRightY);
 		binaryCodedLeftX.saveImage(base + "left/vertical.png");
-		binaryCodedLeftY.saveImage(base + "left/horizontal.png");	
+		binaryCodedLeftY.saveImage(base + "left/horizontal.png");
 		binaryCodedRightX.saveImage(base + "right/vertical.png");
 		binaryCodedRightY.saveImage(base + "right/horizontal.png");
 	}
@@ -226,17 +226,18 @@ void testApp::setup() {
 	saveRemap(binaryCodedLeftX, binaryCodedLeftY, "remap-left.exr");
 	saveRemap(binaryCodedRightX, binaryCodedRightY, "remap-right.exr");
 	
-	//leftLut.setup(tw, th, "left-lut.exr");
-	//rightLut.setup(tw, th, "right-lut.exr");
+	leftLut.setup(tw, th, "left-lut.exr");
+	rightLut.setup(tw, th, "right-lut.exr");
 	
-	leftLut.setupText(tw, th, "left-lut.csv");
-	rightLut.setupText(tw, th, "right-lut.csv");
+	//leftLut.setupText(tw, th, "left-lut.csv");
+	//rightLut.setupText(tw, th, "right-lut.csv");
 	
-	//buildBinaryCoded(binaryCodedLeftX, binaryCodedLeftY, binaryCodedLeft);
-	//buildBinaryCoded(binaryCodedRightX, binaryCodedRightY, binaryCodedRight);
+	buildBinaryCoded(binaryCodedLeftX, binaryCodedLeftY, binaryCodedLeft);
+	buildBinaryCoded(binaryCodedRightX, binaryCodedRightY, binaryCodedRight);
 }
 
-void testApp::update() {
+void ofApp::update() {
+    
 }
 
 bool _inverse = false;
@@ -286,7 +287,7 @@ void addQuadGradient(ofMesh& quads, ofColor start, ofColor end, ofVec2f topLeft,
 	quads.addVertex(cameraToProjector(topLeft + ofVec2f(size.x, size.y)));
 }
 
-void testApp::drawProjector() {
+void ofApp::drawProjector() {
 	float sx = .03;
 	float sy = .4;
 	float b = .03;
@@ -318,7 +319,7 @@ void testApp::drawProjector() {
 	quads.drawFaces();
 }
 
-void testApp::draw() {
+void ofApp::draw() {
 	ofPushMatrix();
 	if(ofGetHeight() != th) {
 		float scaleAmount = (float) ofGetHeight() / th;
@@ -359,7 +360,7 @@ void testApp::draw() {
 	ofPopMatrix();
 }
 
-void testApp::keyPressed(int key) {
+void ofApp::keyPressed(int key) {
 	if(key == 'f') {
 		//ofToggleFullscreen();
 	}

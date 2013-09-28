@@ -1,4 +1,7 @@
-#include "testApp.h"
+#include "ofApp.h"
+
+using namespace cv;
+using namespace ofxCv;
 
 void drawChessboardCorners(cv::Size patternSize, const vector<Point2f>& centers) {
 	ofMesh lines;
@@ -38,7 +41,7 @@ vector<cv::Point2f> getCenters(ofImage& img, cv::Size patternSize) {
 	return centers;
 }
 
-void testApp::decodeAndSave(string filename) {
+void ofApp::decodeAndSave(string filename) {
 	cout << "loading " << filename << endl;
 
 	camImage.allocate(640, 480, OF_IMAGE_GRAYSCALE);
@@ -61,7 +64,7 @@ void testApp::decodeAndSave(string filename) {
 	proCenters = getCenters(proImage, patternSize);
 }
 
-void testApp::setup() {
+void ofApp::setup() {
 	ofSetVerticalSync(true);
 	ofDirectory calibration;
 	calibration.listDir("half-calibration");
@@ -70,10 +73,10 @@ void testApp::setup() {
 	}
 }
 
-void testApp::update() {
+void ofApp::update() {
 }
 
-void testApp::draw() {
+void ofApp::draw() {
 	ofScale(.75, .75);
 	camImage.draw(0, 0);
 	drawChessboardCorners(patternSize, camCenters);

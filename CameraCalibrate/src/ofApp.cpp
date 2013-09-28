@@ -1,11 +1,11 @@
-#include "testApp.h"
+#include "ofApp.h"
 
 using namespace ofxCv;
 using namespace cv;
 
 int curFrame = 0;
 
-void testApp::setup() {
+void ofApp::setup() {
 	ofSetVerticalSync(true);
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
 	
@@ -29,10 +29,10 @@ void testApp::setup() {
 	calibration.save("calibration.yml");
 }
 
-void testApp::update() {
+void ofApp::update() {
 }
 
-void testApp::draw() {
+void ofApp::draw() {
 	ofBackground(255);
 	
 	cam.begin();
@@ -56,7 +56,7 @@ void testApp::draw() {
 	}
 }
 
-void testApp::keyPressed(int key) {
+void ofApp::keyPressed(int key) {
 	if(key == OF_KEY_DOWN) {
 		curFrame++;
 	}

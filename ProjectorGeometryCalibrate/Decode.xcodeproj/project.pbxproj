@@ -50,7 +50,7 @@
 		27B59A9513F8FB8B002995EB /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27B59A8F13F8FB8B002995EB /* tinyxmlparser.cpp */; };
 		27B59A9613F8FB8B002995EB /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27B59A9113F8FB8B002995EB /* ofxXmlSettings.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
-		E4328149138ABC9F0047C5CB /* openFrameworks.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworks.a */; };
+		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
 		E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */; };
 		E45BE97D0E8CC7DD009D7055 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9730E8CC7DD009D7055 /* AudioToolbox.framework */; };
@@ -246,9 +246,6 @@
 		27B59A6513F8FB7F002995EB /* simpleFileLister.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simpleFileLister.h; path = ../../../addons/ofxControlPanel/src/simpleFileLister.h; sourceTree = SOURCE_ROOT; };
 		27B59A6613F8FB7F002995EB /* simpleLogger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = simpleLogger.cpp; path = ../../../addons/ofxControlPanel/src/simpleLogger.cpp; sourceTree = SOURCE_ROOT; };
 		27B59A6713F8FB7F002995EB /* simpleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simpleLogger.h; path = ../../../addons/ofxControlPanel/src/simpleLogger.h; sourceTree = SOURCE_ROOT; };
-		27B59A8513F8FB8B002995EB /* Instructions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Instructions.txt; path = ../../../addons/ofxDirList/doc/Instructions.txt; sourceTree = SOURCE_ROOT; };
-		27B59A8613F8FB8B002995EB /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = install.xml; path = ../../../addons/ofxDirList/install.xml; sourceTree = SOURCE_ROOT; };
-		27B59A8813F8FB8B002995EB /* ofxDirList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxDirList.h; path = ../../../addons/ofxDirList/src/ofxDirList.h; sourceTree = SOURCE_ROOT; };
 		27B59A8A13F8FB8B002995EB /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = install.xml; path = ../../../addons/ofxXmlSettings/install.xml; sourceTree = SOURCE_ROOT; };
 		27B59A8C13F8FB8B002995EB /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tinyxml.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxml.cpp; sourceTree = SOURCE_ROOT; };
 		27B59A8D13F8FB8B002995EB /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinyxml.h; path = ../../../addons/ofxXmlSettings/libs/tinyxml.h; sourceTree = SOURCE_ROOT; };
@@ -285,7 +282,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4EB6799138ADC1D00A09F29 /* GLUT.framework in Frameworks */,
-				E4328149138ABC9F0047C5CB /* openFrameworks.a in Frameworks */,
+				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
 				E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */,
 				E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */,
 				E45BE97D0E8CC7DD009D7055 /* AudioToolbox.framework in Frameworks */,
@@ -689,35 +686,6 @@
 			path = ../../../addons/ofxControlPanel/src;
 			sourceTree = SOURCE_ROOT;
 		};
-		27B59A8313F8FB8B002995EB /* ofxDirList */ = {
-			isa = PBXGroup;
-			children = (
-				27B59A8413F8FB8B002995EB /* doc */,
-				27B59A8613F8FB8B002995EB /* install.xml */,
-				27B59A8713F8FB8B002995EB /* src */,
-			);
-			name = ofxDirList;
-			path = ../../../addons/ofxDirList;
-			sourceTree = SOURCE_ROOT;
-		};
-		27B59A8413F8FB8B002995EB /* doc */ = {
-			isa = PBXGroup;
-			children = (
-				27B59A8513F8FB8B002995EB /* Instructions.txt */,
-			);
-			name = doc;
-			path = ../../../addons/ofxDirList/doc;
-			sourceTree = SOURCE_ROOT;
-		};
-		27B59A8713F8FB8B002995EB /* src */ = {
-			isa = PBXGroup;
-			children = (
-				27B59A8813F8FB8B002995EB /* ofxDirList.h */,
-			);
-			name = src;
-			path = ../../../addons/ofxDirList/src;
-			sourceTree = SOURCE_ROOT;
-		};
 		27B59A8913F8FB8B002995EB /* ofxXmlSettings */ = {
 			isa = PBXGroup;
 			children = (
@@ -755,7 +723,6 @@
 			isa = PBXGroup;
 			children = (
 				27459925146D1730008DB591 /* ofxCv */,
-				27B59A8313F8FB8B002995EB /* ofxDirList */,
 				27B59A8913F8FB8B002995EB /* ofxXmlSettings */,
 				27B59A2B13F8FB7F002995EB /* ofxControlPanel */,
 			);
@@ -792,7 +759,7 @@
 		E4328144138ABC890047C5CB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E4328148138ABC890047C5CB /* openFrameworks.a */,
+				E4328148138ABC890047C5CB /* openFrameworksDebug.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -870,6 +837,7 @@
 			isa = PBXProject;
 			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "Decode" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				English,
@@ -894,10 +862,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		E4328148138ABC890047C5CB /* openFrameworks.a */ = {
+		E4328148138ABC890047C5CB /* openFrameworksDebug.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = openFrameworks.a;
+			path = openFrameworksDebug.a;
 			remoteRef = E4328147138ABC890047C5CB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
